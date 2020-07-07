@@ -24,7 +24,8 @@ def main():
     while cap.isOpened():
         ret, frame = cap.read()
 
-        frame_resize = cv2.resize(frame, None, fx=1 / DOWNSAMPLE_RATIO, fy=1 / DOWNSAMPLE_RATIO)
+        frame_resize = cv2.resize(
+            frame, None, fx=1 / DOWNSAMPLE_RATIO, fy=1 / DOWNSAMPLE_RATIO)
         gray = cv2.cvtColor(frame_resize, cv2.COLOR_BGR2GRAY)
         faces = detector(gray, 1)
         black_image = np.zeros(frame.shape, np.uint8)
@@ -35,7 +36,8 @@ def main():
         if len(faces) == 1:
             for face in faces:
                 detected_landmarks = predictor(gray, face).parts()
-                landmarks = [[p.x * DOWNSAMPLE_RATIO, p.y * DOWNSAMPLE_RATIO] for p in detected_landmarks]
+                landmarks = [[p.x * DOWNSAMPLE_RATIO, p.y * DOWNSAMPLE_RATIO]
+                             for p in detected_landmarks]
 
                 jaw = reshape_for_polyline(landmarks[0:17])
                 left_eyebrow = reshape_for_polyline(landmarks[22:27])
@@ -51,10 +53,14 @@ def main():
                 thickness = 3
 
                 cv2.polylines(black_image, [jaw], False, color, thickness)
-                cv2.polylines(black_image, [left_eyebrow], False, color, thickness)
-                cv2.polylines(black_image, [right_eyebrow], False, color, thickness)
-                cv2.polylines(black_image, [nose_bridge], False, color, thickness)
-                cv2.polylines(black_image, [lower_nose], True, color, thickness)
+                cv2.polylines(
+                    black_image, [left_eyebrow], False, color, thickness)
+                cv2.polylines(
+                    black_image, [right_eyebrow], False, color, thickness)
+                cv2.polylines(
+                    black_image, [nose_bridge], False, color, thickness)
+                cv2.polylines(
+                    black_image, [lower_nose], True, color, thickness)
                 cv2.polylines(black_image, [left_eye], True, color, thickness)
                 cv2.polylines(black_image, [right_eye], True, color, thickness)
                 cv2.polylines(black_image, [outer_lip], True, color, thickness)
@@ -86,9 +92,12 @@ def main():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--file', dest='filename', type=str, help='Name of the video file.')
-    parser.add_argument('--num', dest='number', type=int, help='Number of train data to be created.')
-    parser.add_argument('--landmark-model', dest='face_landmark_shape_file', type=str, help='Face landmark model file.')
+    parser.add_argument('--file', dest='filename', type=str,
+                        help='Name of the video file.')
+    parser.add_argument('--num', dest='number', type=int,
+                        help='Number of train data to be created.')
+    parser.add_argument('--landmark-model', dest='face_landmark_shape_file',
+                        type=str, help='Face landmark model file.')
     args = parser.parse_args()
 
     # Create the face predictor and landmark predictor
